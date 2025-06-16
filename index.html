@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Reminder System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Collapsible Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-logo">MediCal</h2>
+            <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="prescriptions">
+                    <span class="tab-icon">💊</span>
+                    <span class="tab-text">Prescriptions</span>
+                </button>
+                <button class="nav-tab" data-tab="reminders">
+                    <span class="tab-icon">⏰</span>
+                    <span class="tab-text">Reminders</span>
+                </button>
+                <button class="nav-tab" data-tab="history">
+                    <span class="tab-icon">📊</span>
+                    <span class="tab-text">History</span>
+                </button>
+                <button class="nav-tab" data-tab="settings">
+                    <span class="tab-icon">⚙️</span>
+                    <span class="tab-text">Settings</span>
+                </button>
+                <button class="nav-tab" data-tab="help">
+                    <span class="tab-icon">❓</span>
+                    <span class="tab-text">Help</span>
+                </button>
+            </div>
+        </nav>
+
+        <div class="sidebar-content">
+            <!-- Prescriptions Tab -->
+            <div id="prescriptions-tab" class="tab-content active">
+                <div class="tab-header">
+                    <h3>Active Prescriptions</h3>
+                    <button id="addPrescriptionBtn" class="btn btn-primary btn-sm">+ Add</button>
+                </div>
+                <div id="prescriptionList" class="prescription-list">
+                    <!-- Prescriptions will be listed here -->
+                </div>
+            </div>
+
+            <!-- Reminders Tab -->
+            <div id="reminders-tab" class="tab-content">
+                <div class="tab-header">
+                    <h3>Reminder Controls</h3>
+                </div>
+                <div class="reminder-controls">
+                    <!-- Reminder Status -->
+                    <div class="reminder-status-section">
+                        <h4>Automatic Reminders Status</h4>
+                        <div id="reminderStatus" class="reminder-status">
+                            ⚠️ Email address not configured
+                        </div>
+                        <p style="font-size: 12px; color: #718096; margin-top: 8px;">
+                            Configure your email in Settings to enable automatic reminders
+                        </p>
+                    </div>
+
+                    <!-- Manual Send Button -->
+                    <div style="margin: 20px 0;">
+                        <button id="sendAllRemindersBtn" class="btn btn-primary full-width">Send Pending Reminders Now</button>
+                        <p style="font-size: 12px; color: #718096; text-align: center; margin-top: 8px;">
+                            Manually send reminders for today's pending medications
+                        </p>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="reminder-stats">
+                        <h4 style="margin-bottom: 12px;">Today's Overview</h4>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Doses:</span>
+                            <span id="todayDoses" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Completed:</span>
+                            <span id="completedDoses" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pending:</span>
+                            <span id="pendingDoses" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Scheduled Reminders:</span>
+                            <span id="scheduledReminders" class="stat-value">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Setup Guide -->
+                    <div class="setup-guide" style="background: rgba(59, 130, 246, 0.1); padding: 16px; border-radius: 8px; margin-top: 20px;">
+                        <h4 style="color: #3b82f6; margin-bottom: 12px;">📧 Email Reminder Setup</h4>
+                        
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: #2d3748; margin-bottom: 8px; font-size: 14px;">Step 1: Configure Your Email (User Settings)</h5>
+                            <ol style="font-size: 12px; color: #4a5568; margin: 0; padding-left: 20px;">
+                                <li>Go to the <strong>Settings</strong> tab</li>
+                                <li>Enter your email address</li>
+                                <li>Enable "Email reminders" checkbox</li>
+                                <li>Click "Save Settings"</li>
+                            </ol>
+                        </div>
+
+                        <div style="margin-bottom: 16px;">
+                            <h5 style="color: #2d3748; margin-bottom: 8px; font-size: 14px;">Step 2: Configure Email Service (Developer Setup)</h5>
+                            <ol style="font-size: 12px; color: #4a5568; margin: 0; padding-left: 20px;">
+                                <li>Sign up at <a href="https://resend.com" target="_blank" style="color: #3b82f6;">resend.com</a> (free tier available)</li>
+                                <li>Get your API key from the dashboard</li>
+                                <li>Verify your domain (or use resend.dev for testing)</li>
+                                <li>Edit script.js lines 301-303 with your credentials</li>
+                                <li>Refresh the page</li>
+                            </ol>
+                        </div>
+
+                        <div style="background: rgba(34, 197, 94, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #22c55e;">
+                            <p style="font-size: 11px; color: #059669; margin: 0; font-weight: 500;">
+                                ✅ Step 1 complete? Great! The system will work in demo mode until you complete Step 2.
+                            </p>
+                        </div>
+
+                        <div style="background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 6px; border-left: 3px solid #8b5cf6; margin-top: 8px;">
+                            <p style="font-size: 11px; color: #7c3aed; margin: 0; font-weight: 500;">
+                                🧪 Demo Mode: Reminders will be logged to console instead of sending real emails
+                            </p>
+                        </div>
+
+                        <p style="font-size: 11px; color: #718096; margin-top: 12px; font-style: italic;">
+                            💡 Type "testEmailSetup()" in browser console to check your configuration status
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="history-tab" class="tab-content">
+                <div class="tab-header">
+                    <h3>Medication History</h3>
+                </div>
+                <div id="historyList" class="history-list">
+                    <!-- History will be listed here -->
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings-tab" class="tab-content">
+                <div class="tab-header">
+                    <h3>Settings</h3>
+                </div>
+                <div class="settings-content">
+                    <div class="settings-section">
+                        <h4>Email Notifications</h4>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableEmailReminders" name="enableEmailReminders" checked>
+                                Enable email reminders
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableDailySummary" name="enableDailySummary">
+                                Send daily medication summary
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="dailySummaryTime">Daily Summary Time</label>
+                            <input type="time" id="dailySummaryTime" name="dailySummaryTime" value="08:00">
+                            <small style="color: #718096; font-size: 12px;">Time to send daily medication summary</small>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h4>Epic FHIR Integration</h4>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="useEpicFHIR" name="useEpicFHIR">
+                                Enable Epic FHIR integration
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="epicPatientId">Patient ID</label>
+                            <input type="text" id="epicPatientId" name="epicPatientId" placeholder="Enter your Epic MyChart Patient ID" maxlength="64" autocomplete="off">
+                            <small style="color: #718096; font-size: 12px;">
+                                🔒 <strong>Security:</strong> Only enter your own Patient ID or that of someone you're authorized to care for.<br>
+                                📋 <strong>Where to find:</strong> Check your Epic MyChart account, discharge papers, or ask your healthcare provider.<br>
+                                ✅ <strong>Format:</strong> Usually letters, numbers, hyphens, or dots (e.g., "ABC123-DEF456")
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <button id="syncEpicFHIRBtn" class="btn btn-outline full-width" style="margin-top: 8px;">
+                                🔄 Import Medications from Epic FHIR
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <div style="background: rgba(102, 126, 234, 0.1); padding: 12px; border-radius: 8px; font-size: 12px; color: #4a5568;">
+                                <strong>🏥 How Epic FHIR Works:</strong><br>
+                                • Securely connects to your healthcare provider's Epic system<br>
+                                • Automatically imports your current medications<br>
+                                • Includes dosages, timing, and special instructions<br>
+                                • Updates when your doctor makes changes<br><br>
+                                
+                                <div style="background: rgba(34, 197, 94, 0.1); padding: 8px; border-radius: 4px; border-left: 3px solid #22c55e; margin-top: 8px;">
+                                    ✅ <strong>Safe & Secure:</strong> All data stays on your device. Patient ID is validated and encrypted.
+                                </div>
+                                
+                                <div style="background: rgba(139, 92, 246, 0.1); padding: 8px; border-radius: 4px; border-left: 3px solid #8b5cf6; margin-top: 8px;">
+                                    🧪 <strong>Demo Mode:</strong> Leave Patient ID blank to try with sample medications
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="saveSettingsBtn" class="btn btn-primary full-width">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Help Tab -->
+            <div id="help-tab" class="tab-content">
+                <div class="tab-header">
+                    <h3>Help & Support</h3>
+                </div>
+                <div class="help-content">
+                    <div class="help-section">
+                        <h4>Quick Start</h4>
+                        <ul>
+                            <li>Add your medications using the "Add" button</li>
+                            <li>Set up email notifications in Settings</li>
+                            <li>View your medication schedule in the calendar</li>
+                            <li>Mark doses as taken or skipped</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h4>Features</h4>
+                        <ul>
+                            <li>📅 Multiple calendar views (Day, 3-Day, Week, Month)</li>
+                            <li>💊 Color-coded medications</li>
+                            <li>📧 Email reminders with beautiful formatting</li>
+                            <li>📊 Dose tracking and history</li>
+                            <li>🍽️ Food instruction indicators</li>
+                            <li>📋 Daily medication summary emails</li>
+                            <li>🏥 Epic FHIR integration for real prescription data</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>🏥 Epic FHIR Setup Guide</h4>
+                        <div style="background: rgba(102, 126, 234, 0.1); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                            <h5 style="margin-top: 0; color: #4c51bf;">What is Epic FHIR?</h5>
+                            <p style="margin-bottom: 12px; font-size: 14px;">Epic FHIR allows this app to securely connect to your healthcare provider's system and automatically import your current medications, including dosages, timing, and special instructions from your doctor.</p>
+                            
+                            <h5 style="color: #4c51bf;">Step 1: Find Your Patient ID</h5>
+                            <p style="margin-bottom: 8px; font-size: 14px;"><strong>Your Patient ID can be found in:</strong></p>
+                            <ul style="font-size: 14px; margin-bottom: 12px;">
+                                <li>📱 Your Epic MyChart mobile app or website</li>
+                                <li>📄 Hospital discharge papers or visit summaries</li>
+                                <li>💳 Your hospital ID card or wristband</li>
+                                <li>📞 Call your healthcare provider's office</li>
+                            </ul>
+                            
+                            <h5 style="color: #4c51bf;">Step 2: Enter Your Patient ID Safely</h5>
+                            <ul style="font-size: 14px; margin-bottom: 12px;">
+                                <li>✅ Only enter YOUR OWN Patient ID</li>
+                                <li>✅ Patient IDs usually look like: "ABC123-DEF456" or "12345678"</li>
+                                <li>✅ Double-check for typos before saving</li>
+                                <li>❌ Never share your Patient ID with others</li>
+                                <li>❌ Don't enter someone else's Patient ID without permission</li>
+                            </ul>
+                            
+                            <h5 style="color: #4c51bf;">Step 3: Import Your Medications</h5>
+                            <ol style="font-size: 14px; margin-bottom: 12px;">
+                                <li>Go to Settings in the sidebar</li>
+                                <li>Check "Enable Epic FHIR integration"</li>
+                                <li>Enter your Patient ID in the text box</li>
+                                <li>Click "Save Settings"</li>
+                                <li>Click "Import Medications from Epic FHIR"</li>
+                                <li>Wait for the system to import your medications</li>
+                            </ol>
+                            
+                            <div style="background: rgba(34, 197, 94, 0.1); padding: 12px; border-radius: 6px; border-left: 4px solid #22c55e; margin-top: 12px;">
+                                <strong style="color: #166534;">🔒 Your Data is Safe:</strong><br>
+                                <span style="font-size: 13px; color: #166534;">• All data stays on your device - nothing is sent to external servers<br>
+                                • Your Patient ID is validated and encrypted<br>
+                                • The system creates automatic backups of your data</span>
+                            </div>
+                            
+                            <div style="background: rgba(139, 92, 246, 0.1); padding: 12px; border-radius: 6px; border-left: 4px solid #8b5cf6; margin-top: 8px;">
+                                <strong style="color: #6b46c1;">🧪 Demo Mode Available:</strong><br>
+                                <span style="font-size: 13px; color: #6b46c1;">If you don't have your Patient ID yet, you can try the system with sample medications by leaving the Patient ID field blank.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Calendar Navigation</h4>
+                        <ul>
+                            <li>Use the arrow buttons to navigate dates</li>
+                            <li>Click "Today" to return to current date</li>
+                            <li>Switch between Day, 3-Day, Week, and Month views</li>
+                            <li>Click on medication events to mark as taken/skipped</li>
+                        </ul>
+                    </div>
+
+                    <div class="help-section">
+                        <h4>Troubleshooting</h4>
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 6px; border-left: 4px solid #f59e0b;">
+                            <p style="margin: 0; font-size: 14px;"><strong>Common Issues:</strong></p>
+                            <ul style="font-size: 13px; margin-top: 8px; margin-bottom: 0;">
+                                <li><strong>Patient ID not working?</strong> Double-check the format and contact your healthcare provider</li>
+                                <li><strong>No medications imported?</strong> Your provider might not use Epic, or you may not have active prescriptions</li>
+                                <li><strong>Email reminders not working?</strong> Check your email address in settings</li>
+                                <li><strong>System not loading?</strong> Try refreshing the page or clearing your browser cache</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button id="menuToggle" class="menu-toggle">☰</button>
+                </div>
+                <div class="header-center">
+                    <h1 class="page-title">Medication Calendar</h1>
+                </div>
+                <div class="header-right">
+                    <div class="quick-actions">
+                        <button id="quickAddBtn" class="btn btn-outline btn-sm">Quick Add</button>
+                        <button id="todayBtn" class="btn btn-outline btn-sm">Today</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-container">
+                <!-- Calendar Controls -->
+                <div class="calendar-controls">
+                    <div class="view-selector">
+                        <button class="view-btn active" data-view="day">Day</button>
+                        <button class="view-btn" data-view="three-day">3 Day</button>
+                        <button class="view-btn" data-view="week">Week</button>
+                        <button class="view-btn" data-view="month">Month</button>
+                    </div>
+                    <div class="navigation">
+                        <button id="prevBtn" class="nav-btn">←</button>
+                        <h2 id="currentDate" class="current-date"></h2>
+                        <button id="nextBtn" class="nav-btn">→</button>
+                    </div>
+                </div>
+
+                <!-- Calendar Container -->
+                <div id="calendarContainer" class="calendar-container">
+                    <!-- Calendar will be generated here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Prescription Modal -->
+    <div id="prescriptionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Prescription</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="prescriptionForm" class="prescription-form">
+                <div class="form-group">
+                    <label for="medicationName">Medication Name</label>
+                    <input type="text" id="medicationName" name="medicationName" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dosage">Dosage</label>
+                        <input type="text" id="dosage" name="dosage" placeholder="e.g., 10mg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="frequency">Frequency</label>
+                        <select id="frequency" name="frequency" required>
+                            <option value="">Select frequency</option>
+                            <option value="once-daily">Once daily</option>
+                            <option value="twice-daily">Twice daily</option>
+                            <option value="three-times-daily">Three times daily</option>
+                            <option value="four-times-daily">Four times daily</option>
+                            <option value="every-other-day">Every other day</option>
+                            <option value="weekly">Weekly</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date (Optional)</label>
+                        <input type="date" id="endDate" name="endDate">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="times">Times to take</label>
+                    <div id="timesContainer" class="times-container">
+                        <input type="time" class="time-input" value="08:00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="foodInstructions">Food Instructions</label>
+                    <select id="foodInstructions" name="foodInstructions">
+                        <option value="no-restriction">No restriction</option>
+                        <option value="with-food">Take with food</option>
+                        <option value="without-food">Take without food</option>
+                        <option value="before-meals">Take before meals</option>
+                        <option value="after-meals">Take after meals</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="specialInstructions">Special Instructions</label>
+                    <textarea id="specialInstructions" name="specialInstructions" rows="3" placeholder="Any additional instructions..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="reminderTime">Reminder Time (minutes before dose)</label>
+                    <input type="number" id="reminderTime" name="reminderTime" value="30" min="0" max="240">
+                </div>
+
+                <div class="form-group">
+                    <label for="color">Calendar Color</label>
+                    <select id="color" name="color">
+                        <option value="blue">Blue</option>
+                        <option value="green">Green</option>
+                        <option value="red">Red</option>
+                        <option value="purple">Purple</option>
+                        <option value="orange">Orange</option>
+                        <option value="pink">Pink</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="cancelBtn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Prescription</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dose Action Modal -->
+    <div id="doseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="doseModalTitle">Mark Dose</h3>
+                <button class="close-btn" id="closeDoseModal">&times;</button>
+            </div>
+            <div class="dose-info">
+                <p id="doseInfo"></p>
+                <div class="dose-actions">
+                    <button id="markTakenBtn" class="btn btn-success">Mark as Taken</button>
+                    <button id="markSkippedBtn" class="btn btn-warning">Mark as Skipped</button>
+                    <button id="sendReminderBtn" class="btn btn-primary">Send Reminder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
